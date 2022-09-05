@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+const { ESBuildMinifyPlugin } = require("esbuild-loader");
 
 module.exports = {
   context: __dirname,
@@ -15,10 +16,11 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(t|j)sx?$/,
-        loader: "ts-loader",
+        test: /\.tsx?$/,
+        loader: "esbuild-loader",
         options: {
-          transpileOnly: true,
+          loader: "tsx",
+          target: "es2015",
         },
       },
     ],
@@ -40,5 +42,10 @@ module.exports = {
   ],
   optimization: {
     splitChunks: { chunks: "all" },
+    minimizer: [
+      new ESBuildMinifyPlugin({
+        target: "es2015",
+      }),
+    ],
   },
 };
